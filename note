@@ -1,0 +1,20 @@
+#!/bin/bash
+# note.sh creates a markdown file with today's date as the name and opens it for editing in vim.
+# You can also quickly view a note from yesterday by using the -y argument.
+# usage: note [-y]
+
+path="/home/lmccoy/documents/notes/"
+ext=".md"
+
+date=$(date +%F)
+yesterday=$(date --date="1 day ago" +%F)
+
+if [[ $1 = "-y" ]]; then
+    filename+=$yesterday
+else
+    filename+=$date
+fi
+filename+=$ext
+
+cd $path
+vim $filename
