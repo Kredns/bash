@@ -70,3 +70,4 @@ fi
 
 # Perform a little bit of clean up.
 kdestroy
+#Test
