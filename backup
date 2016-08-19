@@ -55,13 +55,13 @@ else
 fi
 
 if [ "$OSX" == true ]; then
-    if rsync -v /Users/$USER/$TAR_NAME $HD_AGENT@file.rdu.***REMOVED***.com:***REMOVED***/ ; then
+    if rsync -v /Users/$USER/$TAR_NAME $HD_AGENT@file.rdu.***REMOVED***:***REMOVED***/ ; then
         printf "${BLUE}%s has been uploaded to ***REMOVED***${NC}\n" "$TAR_NAME"
     else
         printf "${RED}An error has occured while uploading the file. Please try again.${NC}\n"
     fi
 else
-    if rsync -v /home/$TAR_NAME $HD_AGENT@file.rdu.***REMOVED***.com:***REMOVED***/ ; then
+    if rsync -v /home/$TAR_NAME $HD_AGENT@file.rdu.***REMOVED***:***REMOVED***/ ; then
         printf "${BLUE}%s has been uploaded to ***REMOVED***${NC}\n" "$TAR_NAME"
     else
         printf "${RED}An error has occured while uploading the file. Please try again.${NC}\n"
