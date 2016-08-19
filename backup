@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Created by Lucas McCoy
+# July 7th, 2016
+
+RED='\033[0;31m'
+BLUE='\033[92m'
+NC='\033[0m'
+
+if [ "$(uname)" == "Darwin" ]; then
+    OSX=true
+else
+    OSX=false
+fi
+
+if [ "$OSX" == true ]; then
+    # Change where we look for home folder.
+    USER=$USER
+    cd /Users/$USER
+else
+    if (( "$EUID" != 0 )); then
+        printf "${RED}You must this script as root on Linux!${NC}\n"
+        exit
+    fi
+
+    USER=$(hostname | awk -F\. '{print $1}')
+    cd /home
+fi
+
+TAR_NAME=$USER
+TAR_NAME+='-userdata-'
+TAR_NAME+=$(date +%Y%m%d-%H)
+
+printf "${BLUE}Enter your username->${NC} "
+read HD_AGENT
+printf "${BLUE}Please enter your Kerberos password.\n${NC}"
+KUSER=$HD_AGENT
+KUSER+="@***REMOVED***"
+# By creating a Kerberos ticket for yourself this saves you from needing to re-enter your password later on.
+until kinit $KUSER
+do
+    echo "Try again"
+    sleep 2 # This is needed so that users can hit Ctrl-C to quit.
+done
+
+TAR_NAME+="_"
+TAR_NAME+=$HD_AGENT
+TAR_NAME+='.tar.gz'
+
+if [ "$OSX" == true ]; then
+    # Change where we look for home folder and backup the important stuff.
+    tar -czvf $TAR_NAME Desktop Documents Downloads Library Movies Music Movies Pictures Public
+else
+    tar -czvf $TAR_NAME $USER/
+fi
+
+if [ "$OSX" == true ]; then
+    if rsync -v /Users/$USER/$TAR_NAME $HD_AGENT@file.rdu.***REMOVED***.com:***REMOVED***/ ; then
+        printf "${BLUE}%s has been uploaded to ***REMOVED***${NC}\n" "$TAR_NAME"
+    else
+        printf "${RED}An error has occured while uploading the file. Please try again.${NC}\n"
+    fi
+else
+    if rsync -v /home/$TAR_NAME $HD_AGENT@file.rdu.***REMOVED***.com:***REMOVED***/ ; then
+        printf "${BLUE}%s has been uploaded to ***REMOVED***${NC}\n" "$TAR_NAME"
+    else
+        printf "${RED}An error has occured while uploading the file. Please try again.${NC}\n"
+    fi
+fi
+
+# Perform a little bit of clean up.
+kdestroy
