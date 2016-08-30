@@ -2,6 +2,12 @@
 # This script implements the watch command for OS X.
 # usage: watch <your_command> <sleep_duration>
 
+if [[ $# -eq 0 ]]; then
+    echo 'usage: ./watch <command>'
+    echo 'watch "df -h"'
+    exit 1
+fi
+
 while :;
 do
     clear
